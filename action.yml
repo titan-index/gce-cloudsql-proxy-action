@@ -36,7 +36,7 @@ runs:
         # echo '${{ inputs.creds }}' > /tmp/gce-cloudsql-proxy/key.json
 
         # Start Cloud SQL Proxy
-        ./cloud_sql_proxy -instances=${{ inputs.instance }}=tcp:127.0.0.1:${{ inputs.port }}
+        ./cloud_sql_proxy -instances=${{ inputs.instance }}=tcp:127.0.0.1:${{ inputs.port }} &
 
         # # start container
         # docker run -d --net host --name gce-cloudsql-proxy --restart on-failure \
