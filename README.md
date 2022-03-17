@@ -20,7 +20,7 @@ or use a tool like [Terraform](https://www.terraform.io).
 | `creds`                          | Automatically exported as a short-lived Service Account JSON Key            |
 | `instance`                       | ***Required*** Cloud SQL connection name                                    |
 | `port`                           | Listen on port, default 5432                                                |
-| `version`                  | Cloud SQL Proxy version, default latest                                     |
+| `version`                        | Cloud SQL Proxy version, default latest                                     |
 
 
 ## Example Usage
@@ -45,7 +45,7 @@ jobs:
         workload_identity_provider: 'projects/123456789/locations/global/workloadIdentityPools/my-pool/providers/my-provider'
         service_account: 'my-service-account@my-project.iam.gserviceaccount.com'
 
-    - uses: wagnerpereira/gce-cloudsql-proxy-action@v1
+    - uses: wagnerpereira/gce-cloudsql-proxy-action@v2
       with:
         instance: my-project:us-central1:instance-1
 ```
