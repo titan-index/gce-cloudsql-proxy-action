@@ -7,7 +7,7 @@ branding:
 
 inputs:
   creds:
-    description: 'Contents of a Service Account JSON Key'
+    description: 'Contents of a short-lived GOOGLE_APPLICATION_CREDENTIALS environment variable'
     required: false
   instance:
     description: 'CloudSQL instance'
@@ -31,21 +31,8 @@ runs:
         wget https://dl.google.com/cloudsql/cloud_sql_proxy.linux.amd64 -O cloud_sql_proxy        
         chmod +x cloud_sql_proxy
 
-        # write google application credentials to a temporary file to be used inside the container
-        # mkdir -p /tmp/gce-cloudsql-proxy
-        # echo '${{ inputs.creds }}' > /tmp/gce-cloudsql-proxy/key.json
-
         # Start Cloud SQL Proxy
         ./cloud_sql_proxy -instances=${{ inputs.instance }}=tcp:127.0.0.1:${{ inputs.port }} &
-
-        # # start container
-        # docker run -d --net host --name gce-cloudsql-proxy --restart on-failure \
-        # -v /tmp/gce-cloudsql-proxy:/tmp/gce-cloudsql-proxy \
-        # gcr.io/cloudsql-docker/gce-proxy:${{ inputs.proxy_version }} \
-        # /cloud_sql_proxy \
-        #   -token /tmp/gce-cloudsql-proxy/key.json \
-        #   -dir /tmp \
-        #   -instances=${{ inputs.instance }}=tcp:127.0.0.1:${{ inputs.port }}
 
         # wait until connections are accepted
         sleep 3
@@ -59,9 +46,6 @@ runs:
           fi
           sleep 2
         done
-
-        # # print container logs
-        # docker logs gce-cloudsql-proxy
 
         # exit with error code if we couldn't connect
         if [[ $isready -ne 0 ]]; then
