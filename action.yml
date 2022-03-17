@@ -1,5 +1,5 @@
-name: 'Google Cloud SQL Proxy'
-description: 'Start Google CloudSQL Proxy'
+name: 'Google Cloud SQL Proxy with workload identity'
+description: 'Start Google CloudSQL Proxy using Google Workload Identity Federation short-lived credentials'
 
 branding:
   icon: 'database'
