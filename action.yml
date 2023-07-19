@@ -19,7 +19,7 @@ inputs:
   proxy_version:
     description: 'CloudSQL Proxy Version'
     required: false
-    default: v1.29.0
+    default: v2.5.0
 
 runs:
   using: 'composite'
@@ -28,26 +28,27 @@ runs:
       shell: bash
       run: |
         # Download Linux binary
-        wget https://dl.google.com/cloudsql/cloud_sql_proxy.linux.amd64 -O cloud_sql_proxy        
+        wget -q https://storage.googleapis.com/cloud-sql-connectors/cloud-sql-proxy/v2.5.0/cloud-sql-proxy.linux.amd64 -O cloud_sql_proxy
         chmod +x cloud_sql_proxy
 
         # Start Cloud SQL Proxy
-        ./cloud_sql_proxy -instances=${{ inputs.instance }}=tcp:127.0.0.1:${{ inputs.port }} &
+        ./cloud_sql_proxy ${{ inputs.instance }} --address 0.0.0.0 --port ${{ inputs.port }} --health-check --quitquitquit &
 
-        # wait until connections are accepted
-        sleep 3
-        isready=0
+        # Wait until proxy is ready
+        isready=1
         for i in {1..10}; do
           echo "Wait for connections to be ready ... $i/10"
-          (${{ github.action_path }}/wait-for-it.sh --quiet --timeout=3 --host=127.0.0.1 --port=${{ inputs.port }} || exit $?) && true # escape bash's pipefail
-          isready=$?
-          if [[ $isready -eq 0 ]]; then
+          if curl -s -X GET http://localhost:9090/readiness >/dev/null; then
+            isready=0
             break
           fi
           sleep 2
         done
 
+        # Exit with error code if we couldn't connect
+        exit $isready
+
         # exit with error code if we couldn't connect
         if [[ $isready -ne 0 ]]; then
-          exit $isready 
+          exit $isready
         fi
