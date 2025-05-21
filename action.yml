@@ -28,7 +28,7 @@ runs:
       shell: bash
       run: |
         # Download Linux binary
-        wget -q https://storage.googleapis.com/cloud-sql-connectors/cloud-sql-proxy/v2.5.0/cloud-sql-proxy.linux.amd64 -O cloud_sql_proxy
+        wget -q https://storage.googleapis.com/cloud-sql-connectors/cloud-sql-proxy/${{ inputs.proxy_version }}/cloud-sql-proxy.linux.amd64 -O cloud_sql_proxy
         chmod +x cloud_sql_proxy
 
         # Start Cloud SQL Proxy
